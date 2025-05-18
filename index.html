@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bakery Management System - Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <h1>Bakery Management System</h1>
+            
+            <!-- User Type Selection -->
+            <div class="user-type">
+                <button class="type-btn active" data-type="manager">Manager</button>
+                <button class="type-btn" data-type="distributor">Distributor</button>
+                <button class="type-btn" data-type="customer">Customer</button>
+            </div>
+
+            <!-- Manager Login Form -->
+            <form id="managerForm" class="login-form">
+                <h2>Manager Login</h2>
+                <div class="form-group">
+                    <input type="email" id="managerUsername" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="managerPassword" placeholder="Password" required>
+                </div>
+                <button type="submit">Login</button>
+                <p class="signup-link">Need an account? <a href="#" id="showRegister">Register</a></p>
+            </form>
+
+            <!-- Distributor Login Form -->
+            <form id="distributorForm" class="login-form hidden">
+                <h2>Distributor Login</h2>
+                <div class="form-group">
+                    <input type="email" id="distributorUsername" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="distributorPassword" placeholder="Password" required>
+                </div>
+                <button type="submit">Login</button>
+                <p class="signup-link">Need an account? <a href="#" id="showRegisterDistributor">Register</a></p>
+            </form>
+
+            <!-- Customer Login Form -->
+            <form id="customerForm" class="login-form hidden">
+                <h2>Customer Login</h2>
+                <div class="form-group">
+                    <input type="email" id="customerUsername" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="customerMobile" placeholder="Password" required>
+                </div>
+                <button type="submit">Login</button>
+                <p class="signup-link">New customer? <a href="#" id="showSignup">Sign up</a></p>
+            </form>
+
+            <!-- Customer Signup Form -->
+            <form id="customerSignupForm" class="login-form hidden">
+                <h2>Customer Signup</h2>
+                <div class="form-group">
+                    <input type="email" id="signupUsername" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="signupMobile" placeholder="Password" required>
+                </div>
+                <button type="submit">Sign Up</button>
+                <p class="signup-link">Already have an account? <a href="#" id="showLogin">Login</a></p>
+            </form>
+
+            <!-- Registration Form -->
+            <form id="registerForm" class="login-form hidden">
+                <h2>Register New Account</h2>
+                <div class="form-group">
+                    <input type="text" id="registerName" placeholder="Full Name" required>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="registerEmail" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="registerPassword" placeholder="Password" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="registerConfirmPassword" placeholder="Confirm Password" required>
+                </div>
+                <div class="form-group">
+                    <select id="registerRole" required>
+                        <option value="">Select Role</option>
+                        <option value="manager">Manager</option>
+                        <option value="distributor">Distributor</option>
+                        <option value="customer">Customer</option>
+                    </select>
+                </div>
+                <button type="submit">Register</button>
+                <p class="signup-link">Already have an account? <a href="#" id="backToLogin">Login</a></p>
+            </form>
+        </div>
+    </div>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-analytics.js";
+      import { getDatabase, ref, set, get, push, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+      import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+      
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyACwNtH0HJ-z5jvjI634BDZy2uPI3x6A6A",
+        authDomain: "newbakery-31596.firebaseapp.com",
+        databaseURL: "https://newbakery-31596-default-rtdb.asia-southeast1.firebasedatabase.app/",
+        projectId: "newbakery-31596",
+        storageBucket: "newbakery-31596.firebasestorage.app",
+        messagingSenderId: "502783295506",
+        appId: "1:502783295506:web:2cd1aed167c92d50d5d8cb",
+        measurementId: "G-C4H7WBEZKF"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase(app);
+      const auth = getAuth(app);
+      
+      // Make Firebase available globally
+      window.firebase = {
+        app: app,
+        database: database,
+        ref: ref,
+        set: set,
+        get: get,
+        push: push,
+        orderByChild: orderByChild,
+        equalTo: equalTo,
+        auth: auth,
+        createUserWithEmailAndPassword: createUserWithEmailAndPassword,
+        signInWithEmailAndPassword: signInWithEmailAndPassword,
+        signOut: signOut,
+        onAuthStateChanged: onAuthStateChanged
+      };
+
+      // Check if auth is initialized properly
+      if (auth) {
+        console.log("Firebase Auth is initialized successfully");
+      } else {
+        console.error("Firebase Auth initialization failed");
+      }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html> 

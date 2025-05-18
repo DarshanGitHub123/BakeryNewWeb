@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distributor Dashboard - BakeTrack</title>
+    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-container">
+                <img src="images/main_logo.jpg" alt="Bakery Logo" class="logo">
+                <h2>BakeTrack</h2>
+            </div>
+            <nav class="menu">
+                <ul>
+                    <li class="active" data-section="raw-materials">
+                        <i class="fas fa-boxes"></i>
+                        <span>Raw Materials Menu</span>
+                    </li>
+                    <li data-section="availability">
+                        <i class="fas fa-clipboard-check"></i>
+                        <span>Availability</span>
+                    </li>
+                    <li data-section="retail-orders">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span>Retail Orders</span>
+                    </li>
+                </ul>
+            </nav>
+            <button class="logout" type="button">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </button>
+        </div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Raw Materials Menu Section -->
+            <section id="raw-materials" class="content-section active">
+                <h2>Raw Materials Menu</h2>
+                <div class="raw-materials-table-container">
+                    <table class="raw-materials-table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rawMaterialsTableBody">
+                            <!-- Raw materials will be populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <!-- Availability Section -->
+            <section id="availability" class="content-section">
+                <h2>Availability</h2>
+                <form id="availabilityForm">
+                    <div class="raw-materials-table-container">
+                        <table class="raw-materials-table">
+                            <thead>
+                                <tr>
+                                    <th>S.No</th>
+                                    <th>Image</th>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Date of Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody id="availabilityTableBody">
+                                <!-- Raw materials for availability will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="submit" class="place-order-btn" style="margin-top:18px;">Save Availability</button>
+                </form>
+                <h3 style="margin-top:32px;">Saved Stock Entries</h3>
+                <div class="raw-materials-table-container">
+                    <table class="raw-materials-table">
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Date of Stock</th>
+                            </tr>
+                        </thead>
+                        <tbody id="savedStockTableBody">
+                            <!-- Saved stock entries will be shown here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            <!-- Retail Orders Section -->
+            <section id="retail-orders" class="content-section">
+                <h2>Retail Orders</h2>
+                <div class="placeholder">View and manage retail orders here.</div>
+            </section>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module">
+      // Import the functions you need from the SDKs you need
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
+      import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-analytics.js";
+      import { getDatabase, ref, set, get, push, onValue } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-database.js";
+      import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-auth.js";
+      
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      const firebaseConfig = {
+        apiKey: "AIzaSyACwNtH0HJ-z5jvjI634BDZy2uPI3x6A6A",
+        authDomain: "newbakery-31596.firebaseapp.com",
+        databaseURL: "https://newbakery-31596-default-rtdb.asia-southeast1.firebasedatabase.app/",
+        projectId: "newbakery-31596",
+        storageBucket: "newbakery-31596.firebasestorage.app",
+        messagingSenderId: "502783295506",
+        appId: "1:502783295506:web:2cd1aed167c92d50d5d8cb",
+        measurementId: "G-C4H7WBEZKF"
+      };
+
+      // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const analytics = getAnalytics(app);
+      const database = getDatabase(app);
+      const auth = getAuth(app);
+      
+      // Make Firebase available globally
+      window.firebase = {
+        app: app,
+        database: database,
+        ref: ref,
+        set: set,
+        get: get,
+        push: push,
+        onValue: onValue,
+        auth: auth,
+        signOut: signOut,
+        onAuthStateChanged: onAuthStateChanged
+      };
+      
+      // Check if user is logged in
+      onAuthStateChanged(auth, function(user) {
+        if (!user) {
+          // User is not logged in, redirect to login page
+          window.location.href = 'index.html';
+        } else {
+          // Check if user has distributor role
+          const distributorRef = ref(database, 'distributors/' + user.uid);
+          get(distributorRef).then(function(snapshot) {
+            if (!snapshot.exists()) {
+              // User is not a distributor, sign them out and redirect
+              signOut(auth).then(() => {
+                alert('Access denied: You do not have distributor permissions.');
+                window.location.href = 'index.html';
+              });
+            }
+          });
+        }
+      });
+      
+      document.addEventListener('DOMContentLoaded', function() {
+        // Define rawMaterials array (with image for UI, but only name and price for DB)
+        const rawMaterials = [
+            { name: 'Maida (5kg)', image: 'maida.jpg', price: '400 rupees' },
+            { name: 'Sugar (5kg)', image: 'sugar.jpg', price: '735 rupees' },
+            { name: 'Salt (1kg)', image: 'salt.jpg', price: '78 rupees' },
+            { name: 'Yeast (500gm)', image: 'yeast.jpg', price: '440 rupees' },
+            { name: 'Baking Powder (500gm)', image: 'baking_powder.jpg', price: '89 rupees' },
+            { name: 'Baking Soda (500gm)', image: 'baking_soda.jpg', price: '149 rupees' },
+            { name: 'Butter (1kg)', image: 'butter.jpg', price: '490 rupees' },
+            { name: 'Oil (5 liters)', image: 'oil.jpg', price: '420 rupees' },
+            { name: 'Milk (1 litre)', image: 'milk.jpg', price: '48 rupees' },
+            { name: 'Eggs (30 pieces tray)', image: 'eggs.jpg', price: '165 rupees' },
+            { name: 'Cream (whipping, 1kg)', image: 'whipping_cream.jpg', price: '280 rupees' },
+            { name: 'Cheese (processed, 1kg)', image: 'cheese.jpg', price: '418 rupees' },
+            { name: 'Cocoa Powder (500gm)', image: 'coco_powder.jpg', price: '499 rupees' },
+            { name: 'Chocolate (compound, 1kg)', image: 'chocolate_compounds.jpg', price: '120 rupees' },
+            { name: 'Dry Fruits (mixed, 500gm)', image: 'dry_fruits.jpg', price: '700 rupees' },
+            { name: 'Besan (gram flour, 1kg)', image: 'besan.jpg', price: '160 rupees' },
+            { name: 'Jam (mixed fruit, 500gm)', image: 'jam.jpg', price: '190 rupees' },
+            { name: 'Garlic (fresh, 500gm)', image: 'garlic.jpg', price: '80 rupees' },
+            { name: 'Potatoes (for samosa, 5kg)', image: 'potato.jpg', price: '135 rupees' }
+        ];
+
+        // Store raw material details in Firebase under 'raw' node only if not already present (one-time setup)
+        const rawMaterialsRef = ref(database, 'raw');
+        get(rawMaterialsRef).then(function(snapshot) {
+            if (!snapshot.exists()) {
+                // Only store name and price in DB
+                const rawMaterialsForDB = rawMaterials.map(item => ({ name: item.name, price: item.price }));
+                set(rawMaterialsRef, rawMaterialsForDB);
+            }
+        });
+
+        // --- UI Logic below ---
+        const menuItems = document.querySelectorAll('.menu li');
+        const sections = document.querySelectorAll('.content-section');
+        menuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                menuItems.forEach(i => i.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                item.classList.add('active');
+                const sectionId = item.dataset.section;
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+        document.querySelector('.logout').addEventListener('click', function() {
+            signOut(auth).then(() => {
+                window.location.href = 'index.html';
+            }).catch((error) => {
+                console.error("Error signing out:", error);
+            });
+        });
+
+        // Populate raw materials table
+        const tableBody = document.getElementById('rawMaterialsTableBody');
+        tableBody.innerHTML = '';
+        rawMaterials.forEach((item, idx) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${idx + 1}</td>
+                <td><img src="images/${item.image}" alt="${item.name}" onerror="this.onerror=null;this.src='images/no_image.png';" /></td>
+                <td>${item.name}</td>
+                <td>${item.price}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        // --- Availability Section Logic ---
+        // Populate availability table with input fields
+        const availabilityTableBody = document.getElementById('availabilityTableBody');
+        availabilityTableBody.innerHTML = '';
+        rawMaterials.forEach((item, idx) => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${idx + 1}</td>
+                <td><img src="images/${item.image}" alt="${item.name}" onerror="this.onerror=null;this.src='images/no_image.png';" /></td>
+                <td>${item.name}</td>
+                <td>${item.price}</td>
+                <td><input type="number" min="0" class="avail-qty" style="width:80px;"></td>
+                <td><input type="date" class="avail-date" style="width:140px;"></td>
+            `;
+            availabilityTableBody.appendChild(row);
+        });
+      });
+    </script>
+    <script src="distributor-dashboard.js"></script>
+</body>
+</html>
