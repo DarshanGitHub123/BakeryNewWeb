@@ -194,6 +194,9 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
+        // Update inventory immediately
+        updateInventory(orderItems);
+        
         // Get the current user's ID
         const user = firebase.auth.currentUser;
         if (!user) {
@@ -596,50 +599,32 @@ document.addEventListener('DOMContentLoaded', function() {
         
         recommendedList.innerHTML = '<div class="loading-message">Loading recommendations...</div>';
         
-        // Get current user
-        const user = firebase.auth.currentUser;
-        if (!user) {
-            recommendedList.innerHTML = '<div>Please log in to view recommendations.</div>';
-            return;
-        }
-        
-        // Get user's product history
-        const historyRef = firebase.ref(firebase.database, `customerProductHistory/${user.uid}`);
-        firebase.get(historyRef).then((snapshot) => {
+        const salesRef = firebase.ref(firebase.database, 'sales');
+        firebase.get(salesRef).then((snapshot) => {
             if (snapshot.exists()) {
-                const history = snapshot.val();
-                
-                // Sort products by purchase frequency
-                const sortedProducts = Object.entries(history)
-                    .sort((a, b) => b[1] - a[1]) // Sort by count, descending
-                    .map(entry => entry[0]); // Get just the product names
-                
-                if (sortedProducts.length === 0) {
-                    recommendedList.innerHTML = '<div>Start ordering to get personalized recommendations!</div>';
-                    return;
-                }
-                
-                // Generate recommendations based on:
-                // 1. User's past purchases (top 2 most ordered)
-                // 2. Related products (complementary items)
-                // 3. Popular items (hardcoded for now, would use aggregated data in production)
-                
-                const userTopChoices = sortedProducts.slice(0, 2);
-                const relatedProducts = getRelatedProducts(userTopChoices);
-                const popularItems = ['Cake', 'Bread', 'Cookies', 'Pastry']; // Sample popular items
-                
-                // Combine all recommendation sources, ensuring no duplicates
-                let recommendedProducts = [
-                    ...userTopChoices,
-                    ...relatedProducts.filter(p => !userTopChoices.includes(p)),
-                    ...popularItems.filter(p => !userTopChoices.includes(p) && !relatedProducts.includes(p))
-                ].slice(0, 6); // Show at most 6 recommendations
-                
-                // Clear loading message
+                const salesData = snapshot.val();
+                const productSales = {};
+
+                // Calculate total sales for each product
+                Object.values(salesData).forEach(sale => {
+                    sale.items.forEach(item => {
+                        if (productSales[item.product]) {
+                            productSales[item.product] += item.quantity;
+                        } else {
+                            productSales[item.product] = item.quantity;
+                        }
+                    });
+                });
+
+                // Sort products by sales and limit to top 10
+                const topProducts = Object.entries(productSales)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 10)
+                    .map(entry => entry[0]);
+
                 recommendedList.innerHTML = '';
-                
-                // Add recommendations to the UI as cards
-                recommendedProducts.forEach(productName => {
+
+                topProducts.forEach(productName => {
                     const card = document.createElement('div');
                     card.className = 'menu-item-card';
                     const imagePath = `images/${productImages[productName] || 'default.jpg'}`;
@@ -648,105 +633,17 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="menu-item-info">
                             <div class="menu-item-name">${productName}</div>
                             <div class="menu-item-price">${productPrices[productName] || 0} rupees</div>
-                            <button class="add-to-order" data-product="${productName}" style="margin-top:10px;background:#27ae60;color:#fff;border:none;border-radius:5px;padding:8px 16px;cursor:pointer;">Add to Order</button>
                         </div>
                     `;
                     recommendedList.appendChild(card);
                 });
-                
-                // Add event listeners to "Add to Order" buttons
-                recommendedList.querySelectorAll('.add-to-order').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const productName = this.dataset.product;
-                        addRecommendedToOrder(productName);
-                    });
-                });
             } else {
-                recommendedList.innerHTML = '<div>Start ordering to get personalized recommendations!</div>';
+                recommendedList.innerHTML = '<div>No sales data available for recommendations.</div>';
             }
         }).catch((error) => {
             console.error("Error loading recommendations:", error);
             recommendedList.innerHTML = `<div>Error loading recommendations: ${error.message}</div>`;
         });
-    }
-    
-    // Get related products (complementary items)
-    function getRelatedProducts(productList) {
-        // Product relationships (what goes well together)
-        const productRelations = {
-            'Bread': ['Butter', 'Jam', 'Cheese Sandwich'],
-            'Cake': ['Pastry', 'Cup Cake'],
-            'Cookies': ['Brownie', 'Bread'],
-            'Pastry': ['Cake', 'Cup Cake'],
-            'Brownie': ['Cookies', 'Cup Cake'],
-            'Croissant': ['Bread', 'Cheese Sandwich'],
-            'Cup Cake': ['Pastry', 'Cake'],
-            'Dispasand': ['Egg Puff', 'Veg Puff'],
-            'Egg Puff': ['Veg Puff', 'Samosa'],
-            'Garlic Loaf': ['Bread', 'Cheese Sandwich'],
-            'Masala Bun': ['Pav Bread', 'Bread Pakora'],
-            'Pav Bread': ['Masala Bun', 'Bread'],
-            'Rusk': ['Bread', 'Cup Cake'],
-            'Samosa': ['Bread Pakora', 'Veg Puff'],
-            'Veg Puff': ['Egg Puff', 'Samosa'],
-            'Cheese Sandwich': ['Bread', 'Bread Pakora'],
-            'Bread Pakora': ['Samosa', 'Cheese Sandwich']
-        };
-        
-        // Collect related products for each product in the list
-        let relatedProducts = [];
-        productList.forEach(product => {
-            if (productRelations[product]) {
-                relatedProducts = [...relatedProducts, ...productRelations[product]];
-            }
-        });
-        
-        // Remove duplicates
-        return [...new Set(relatedProducts)];
-    }
-    
-    // Add a recommended product to the order form
-    function addRecommendedToOrder(productName) {
-        // Check if any empty order item slot exists
-        let emptyItem = null;
-        const orderItems = orderItemsDiv.querySelectorAll('.order-item');
-        
-        for (const item of orderItems) {
-            const productSelect = item.querySelector('.orderProduct');
-            if (!productSelect.value) {
-                emptyItem = item;
-                break;
-            }
-        }
-        
-        // If no empty slot, add a new item
-        if (!emptyItem) {
-            const newItem = createOrderItem();
-            newItem.querySelector('.remove-item').style.display = 'inline-block';
-            orderItemsDiv.appendChild(newItem);
-            emptyItem = newItem;
-        }
-        
-        // Set product and default quantity
-        const productSelect = emptyItem.querySelector('.orderProduct');
-        const quantityInput = emptyItem.querySelector('.orderQuantity');
-        const imagePreview = emptyItem.querySelector('.product-image-preview');
-        
-        productSelect.value = productName;
-        quantityInput.value = 1;
-        
-        // Update the image preview
-        const img = productImages[productName];
-        if (img) {
-            imagePreview.innerHTML = `<img src="images/${img}" alt="${productName}" style="width:60px;height:60px;object-fit:cover;border-radius:8px;">`;
-        }
-        
-        // Update total
-        calculateOrderTotal();
-        
-        // Scroll to the order section
-        document.querySelector('.menu li[data-section="order"]').click();
-        document.getElementById('orderForm').scrollIntoView({ behavior: 'smooth' });
     }
     
     // --- Feedback Form ---
@@ -800,25 +697,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
         menuList.innerHTML = '<div class="loading-message">Loading menu...</div>';
 
-        // Create cards for each product
-        const products = Object.keys(productPrices).sort();
-        menuList.innerHTML = '';
+        const inventoryRef = firebase.ref(firebase.database, 'inventory');
+        firebase.get(inventoryRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const inventory = snapshot.val();
+                const availableProducts = Object.values(inventory).filter(item => parseInt(item.quantity) > 0);
+                menuList.innerHTML = '';
 
-        products.forEach((product) => {
-            const card = document.createElement('div');
-            card.className = 'menu-item-card';
-            const imagePath = `images/${productImages[product] || 'default.jpg'}`;
-            card.innerHTML = `
-                <img src="${imagePath}" alt="${product}" class="menu-item-img" onerror="this.onerror=null;this.src='images/default.jpg';">
-                <div class="menu-item-info">
-                    <div class="menu-item-name">${product}</div>
-                    <div class="menu-item-price">${productPrices[product]} rupees</div>
-                </div>
-            `;
-            menuList.appendChild(card);
+                availableProducts.forEach(product => {
+                    const card = document.createElement('div');
+                    card.className = 'menu-item-card';
+                    const imagePath = `images/${productImages[product.name] || 'default.jpg'}`;
+                    card.innerHTML = `
+                        <img src="${imagePath}" alt="${product.name}" class="menu-item-img" onerror="this.onerror=null;this.src='images/default.jpg';">
+                        <div class="menu-item-info">
+                            <div class="menu-item-name">${product.name}</div>
+                            <div class="menu-item-price">${productPrices[product.name] || 0} rupees</div>
+                        </div>
+                    `;
+                    menuList.appendChild(card);
+                });
+            } else {
+                menuList.innerHTML = '<div>No products available at the moment.</div>';
+            }
+        }).catch((error) => {
+            console.error("Error loading menu:", error);
+            menuList.innerHTML = `<div>Error loading menu: ${error.message}</div>`;
         });
     }
     
+    // Load available products into order product dropdown
+    function loadAvailableOrderProducts() {
+        const inventoryRef = firebase.ref(firebase.database, 'inventory');
+        firebase.get(inventoryRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const inventory = snapshot.val();
+                const availableProducts = Object.values(inventory).filter(item => parseInt(item.quantity) > 0);
+                const orderProductSelects = document.querySelectorAll('.orderProduct');
+                orderProductSelects.forEach(select => {
+                    select.innerHTML = '<option value="">Select Product</option>'; // Clear existing options
+                    availableProducts.forEach(product => {
+                        const option = document.createElement('option');
+                        option.value = product.name;
+                        option.textContent = product.name;
+                        select.appendChild(option);
+                    });
+                });
+            } else {
+                console.log("No inventory data available");
+            }
+        }).catch((error) => {
+            console.error("Error getting inventory data:", error);
+        });
+    }
+
     // Initial loading
     loadOrderHistory();
     loadRecommended();
@@ -842,4 +774,46 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     })();
+
+    // Call loadAvailableOrderProducts to populate the order product dropdown
+    loadAvailableOrderProducts();
+
+    // Listen for order completion and update inventory
+    function listenForOrderCompletion() {
+        const ordersRef = firebase.ref(firebase.database, 'orders');
+        firebase.onValue(ordersRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const orders = snapshot.val();
+                Object.entries(orders).forEach(([orderId, order]) => {
+                    if (order.status === 'completed' && !order.processed) {
+                        // Update inventory for completed orders
+                        updateInventory(order.items);
+                        // Mark order as processed
+                        const orderRef = firebase.ref(firebase.database, `orders/${orderId}`);
+                        orderRef.set({ ...order, processed: true });
+                    }
+                });
+            }
+        });
+    }
+
+    function updateInventory(items) {
+        const inventoryRef = firebase.ref(firebase.database, 'inventory');
+        firebase.get(inventoryRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const inventory = snapshot.val();
+                items.forEach(item => {
+                    if (inventory[item.product]) {
+                        inventory[item.product].quantity -= item.quantity;
+                    }
+                });
+                firebase.set(inventoryRef, inventory);
+            }
+        }).catch((error) => {
+            console.error("Error updating inventory:", error);
+        });
+    }
+
+    // Call the function to start listening for order completion
+    listenForOrderCompletion();
 }); 

@@ -84,13 +84,27 @@ document.addEventListener('DOMContentLoaded', function() {
         'Veg Puff': 18
     };
 
-    // Load products into dropdown
-    function loadProducts() {
-        products.forEach(product => {
+    // Load available products into dropdown
+    function loadAvailableProducts() {
+        const inventoryRef = firebase.ref(firebase.database, 'inventory');
+        firebase.get(inventoryRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const inventory = snapshot.val();
+                const availableProducts = products.filter(product => 
+                    Object.values(inventory).some(item => item.name === product.name && parseInt(item.quantity) > 0)
+                );
+                productSelect.innerHTML = ''; // Clear existing options
+                availableProducts.forEach(product => {
             const option = document.createElement('option');
             option.value = product.name;
             option.textContent = product.name;
             productSelect.appendChild(option);
+                });
+            } else {
+                console.log("No inventory data available");
+            }
+        }).catch((error) => {
+            console.error("Error getting inventory data:", error);
         });
     }
 
@@ -902,7 +916,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initBillProducts();
 
     // Initialize products
-    loadProducts();
+    loadAvailableProducts();
     
     // Retail Orders Functionality
     const retailOrderForm = document.getElementById('retailOrderForm');
@@ -1270,7 +1284,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Initial loading of various sections
-    loadProducts();
+    loadAvailableProducts();
     loadRawMaterials();
     updateInventoryTable();
     loadRetailOrdersHistory();
@@ -1485,532 +1499,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <h3>INVOICE</h3>
                     </div>
                     <div class="bill-details">
-                        <p><strong>Bill Number:</strong> ${bill.billNumber || bill.key.slice(-6)}</p>
-                        <p><strong>Order ID:</strong> ${bill.orderId ? bill.orderId.slice(-6) : 'N/A'}</p>
-                        <p><strong>Date:</strong> ${bill.completionDate || new Date(bill.timestamp).toLocaleDateString()}</p>
-                        <p><strong>Customer:</strong> ${bill.customerEmail || bill.customerName || 'Walk-in Customer'}</p>
-                        ${bill.deliveryAddress ? `<p><strong>Delivery Address:</strong> ${bill.deliveryAddress}</p>` : ''}
-                        ${bill.phoneNumber ? `<p><strong>Phone:</strong> ${bill.phoneNumber}</p>` : ''}
-                        <p><strong>Payment Method:</strong> ${bill.paymentMethod || 'Cash'}</p>
-                    </div>
-                    <table class="bill-table">
-                        <thead>
-                            <tr>
-                                <th>Product</th>
-                                <th>Quantity</th>
-                                <th>Unit Price</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${itemsHtml}
-                        </tbody>
-                    </table>
-                    <div class="bill-total">
-                        <p>Total Amount: ${bill.totalAmount || bill.total || 0} rupees</p>
-                    </div>
-                    <div class="bill-footer">
-                        <p>Thank you for your order!</p>
-                        <button class="print-btn" onclick="window.print()">Print Bill</button>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        // Show modal
-        modalContainer.style.display = 'block';
-        
-        // Close modal when clicking the X
-        modalContainer.querySelector('.close-btn').addEventListener('click', function() {
-            modalContainer.style.display = 'none';
-        });
-        
-        // Close modal when clicking outside the content
-        modalContainer.addEventListener('click', function(event) {
-            if (event.target === modalContainer) {
-                modalContainer.style.display = 'none';
-            }
-        });
-        
-        // Auto-print if requested
-        if (autoPrint) {
-            setTimeout(() => {
-                window.print();
-            }, 500); // Short delay to ensure modal is fully rendered
-        }
-    }
-
-    // Load customer feedback
-    function loadCustomerFeedback() {
-        const feedbackContainer = document.querySelector('.feedback-list');
-        if (!feedbackContainer) return;
-        feedbackContainer.innerHTML = '<p class="loading-message">Loading customer feedback...</p>';
-        // Get feedback from Firebase
-        const feedbackRef = firebase.ref(firebase.database, 'feedback');
-        firebase.get(feedbackRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                const feedback = snapshot.val();
-                // Convert to array and sort by timestamp (newest first)
-                const feedbackArray = Object.entries(feedback)
-                    .map(([key, item]) => ({...item, id: key}))
-                    .sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
-                if (feedbackArray.length === 0) {
-                    feedbackContainer.innerHTML = '<p>No customer feedback found.</p>';
-                    return;
-                }
-                // Calculate overall rating
-                const totalRatings = feedbackArray.length;
-                const sumRatings = feedbackArray.reduce((sum, item) => sum + (parseInt(item.rating) || 0), 0);
-                const avgRating = (sumRatings / totalRatings).toFixed(2);
-                // Count per star
-                const starCounts = [0, 0, 0, 0, 0]; // index 0 = 1 star, 4 = 5 star
-                feedbackArray.forEach(item => {
-                    const r = parseInt(item.rating);
-                    if (r >= 1 && r <= 5) starCounts[r-1]++;
-                });
-                // Build overall rating HTML (like Amazon)
-                let overallHtml = `<div class="overall-rating" style="margin-bottom:24px;padding:18px 20px;background:#f8f9fa;border-radius:8px;box-shadow:0 1px 6px rgba(44,62,80,0.07);">
-                <div style="display:flex;align-items:center;gap:16px;">
-                    <span style="font-size:2.2em;font-weight:700;color:#f7b500;">${avgRating}</span>
-                    <span style="font-size:1.5em;color:#f7b500;">${'★'.repeat(Math.round(avgRating))}${'☆'.repeat(5-Math.round(avgRating))}</span>
-                    <span style="font-size:1.1em;color:#555;">out of 5</span>
-                </div>
-                <div style="margin-top:8px;font-size:1em;color:#666;">${totalRatings} ratings</div>
-                <div style="margin-top:12px;">
-                    ${[5,4,3,2,1].map(star => {
-                        const count = starCounts[star-1];
-                        const percent = totalRatings ? (count/totalRatings*100).toFixed(1) : 0;
-                        return `<div style='display:flex;align-items:center;gap:8px;margin-bottom:2px;'>
-                            <span style='width:32px;'>${star} star</span>
-                            <div style='flex:1;background:#eee;height:10px;border-radius:5px;overflow:hidden;'><div style='background:#f7b500;width:${percent}%;height:100%;'></div></div>
-                            <span style='width:40px;text-align:right;'>${count}</span>
-                        </div>`;
-                    }).join('')}
-                </div>
-            </div>`;
-            // Clear loading message and add overall rating
-            feedbackContainer.innerHTML = overallHtml;
-            // Add feedback items
-            feedbackArray.forEach(item => {
-                const feedbackItem = document.createElement('div');
-                feedbackItem.className = 'feedback-item';
-                // Generate star rating display
-                const stars = '★'.repeat(item.rating) + '☆'.repeat(5 - item.rating);
-                // Format date
-                const feedbackDate = item.timestamp ? new Date(item.timestamp).toLocaleDateString() : 'Unknown date';
-                feedbackItem.innerHTML = `
-                    <div class="feedback-header">
-                        <div class="customer-info">
-                            <span class="customer-email">${item.customerEmail}</span>
-                            <span class="feedback-date">${feedbackDate}</span>
-                        </div>
-                        <div class="rating">${stars}</div>
-                    </div>
-                    <div class="feedback-comment">${item.comment || 'No comment provided.'}</div>
-                `;
-                feedbackContainer.appendChild(feedbackItem);
-            });
-        } else {
-            feedbackContainer.innerHTML = '<p>No customer feedback found.</p>';
-        }
-    }).catch((error) => {
-        console.error("Error loading customer feedback:", error);
-        feedbackContainer.innerHTML = `<p>Error loading feedback: ${error.message}</p>`;
-    });
-    }
-
-    // Load product expiry information
-    function loadProductExpiry() {
-        const expiryTableBody = document.querySelector('#expiry table tbody');
-        if (!expiryTableBody) return;
-        
-        expiryTableBody.innerHTML = '<tr><td colspan="5" class="loading-message">Loading expiry data...</td></tr>';
-        
-        // Get inventory from Firebase
-        const inventoryRef = firebase.ref(firebase.database, 'inventory');
-        firebase.get(inventoryRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                const inventory = snapshot.val();
-                const inventoryArray = Object.values(inventory);
-                const productGroups = {};
-                const today = new Date();
-                inventoryArray.forEach(item => {
-                    if (!productGroups[item.name]) {
-                        productGroups[item.name] = {
-                            name: item.name,
-                            quantity: 0,
-                            expirySoon: 0,
-                            expired: 0,
-                            nearestExpiry: null,
-                            expiredBatches: [],
-                            expiringSoonBatches: []
-                        };
-                    }
-                    const group = productGroups[item.name];
-                    const quantity = parseInt(item.quantity);
-                    group.quantity += quantity;
-                    const expiryDate = new Date(item.expiryDate);
-                    const diffDays = Math.ceil((expiryDate - today) / (1000 * 60 * 60 * 24));
-                    if (diffDays < 0) {
-                        group.expired += quantity;
-                        group.expiredBatches.push(item.batchNumber);
-                    } else if (diffDays <= 1) {
-                        group.expirySoon += quantity;
-                        group.expiringSoonBatches.push(item.batchNumber);
-                    }
-                    if (!group.nearestExpiry || expiryDate < new Date(group.nearestExpiry)) {
-                        group.nearestExpiry = item.expiryDate;
-                    }
-                });
-                const sortedProducts = Object.values(productGroups).sort((a, b) => {
-                    if (a.expired > 0 && b.expired === 0) return -1;
-                    if (a.expired === 0 && b.expired > 0) return 1;
-                    if (a.expirySoon > 0 && b.expirySoon === 0) return -1;
-                    if (a.expirySoon === 0 && b.expirySoon > 0) return 1;
-                    return new Date(a.nearestExpiry) - new Date(b.nearestExpiry);
-                });
-                if (sortedProducts.length === 0) {
-                    expiryTableBody.innerHTML = '<tr><td colspan="5">No inventory items found.</td></tr>';
-                    return;
-                }
-                expiryTableBody.innerHTML = '';
-                sortedProducts.forEach(product => {
-                    const row = document.createElement('tr');
-                    let statusText, statusClass, actionBtn = '', batchNumbersHtml = '';
-                    if (product.expired > 0) {
-                        statusText = 'Expired';
-                        statusClass = 'status-expired';
-                        actionBtn = `<button class='discard-btn' data-name='${product.name}' data-expiry='${product.nearestExpiry}'>Discarded</button>`;
-                        batchNumbersHtml = product.expiredBatches.length > 0 ? product.expiredBatches.join(', ') : '-';
-                    } else if (product.expirySoon > 0) {
-                        statusText = 'Expiring Soon';
-                        statusClass = 'status-expiring';
-                        batchNumbersHtml = product.expiringSoonBatches.length > 0 ? product.expiringSoonBatches.join(', ') : '-';
-                    } else {
-                        statusText = 'Good';
-                        statusClass = 'status-good';
-                        batchNumbersHtml = '-';
-                    }
-                    row.innerHTML = `
-                        <td>${product.name}</td>
-                        <td>${product.quantity}</td>
-                        <td>${batchNumbersHtml}</td>
-                        <td>${product.nearestExpiry}</td>
-                        <td class="${statusClass}">${statusText}</td>
-                        <td>${actionBtn}</td>
-                    `;
-                    expiryTableBody.appendChild(row);
-                });
-                expiryTableBody.querySelectorAll('.discard-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const name = this.dataset.name;
-                        const expiry = this.dataset.expiry;
-                        discardExpiredItem(name, expiry);
-                    });
-                });
-            } else {
-                expiryTableBody.innerHTML = '<tr><td colspan="5">No inventory items found.</td></tr>';
-            }
-        }).catch((error) => {
-            console.error("Error loading expiry data:", error);
-            expiryTableBody.innerHTML = `<tr><td colspan="5">Error loading expiry data: ${error.message}</td></tr>`;
-        });
-    }
-
-    // --- Overview Section Logic ---
-    function updateOverviewSalesStats(salesData) {
-        const today = new Date().toISOString().split('T')[0];
-        const oneWeekAgo = new Date();
-        oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-        const oneWeekAgoStr = oneWeekAgo.toISOString().split('T')[0];
-        const oneMonthAgo = new Date();
-        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-        const oneMonthAgoStr = oneMonthAgo.toISOString().split('T')[0];
-
-        let todaySales = 0;
-        let weekSales = 0;
-        let monthSales = 0;
-
-        Object.values(salesData).forEach(sale => {
-            const saleDate = sale.date;
-            const saleTotal = parseFloat(sale.total);
-            if (saleDate === today) {
-                todaySales += saleTotal;
-            }
-            if (saleDate >= oneWeekAgoStr) {
-                weekSales += saleTotal;
-            }
-            if (saleDate >= oneMonthAgoStr) {
-                monthSales += saleTotal;
-            }
-        });
-        // Update Overview stat cards
-        const todayEl = document.getElementById('overviewTodaySales');
-        const weekEl = document.getElementById('overviewWeekSales');
-        const monthEl = document.getElementById('overviewMonthSales');
-        if (todayEl) todayEl.textContent = `₹${todaySales.toFixed(2)}`;
-        if (weekEl) weekEl.textContent = `₹${weekSales.toFixed(2)}`;
-        if (monthEl) monthEl.textContent = `₹${monthSales.toFixed(2)}`;
-    }
-
-    function updateLowStockNotifications(inventoryItems) {
-        const lowStockDiv = document.getElementById('lowStockNotifications');
-        if (!lowStockDiv) return;
-        const threshold = 10;
-        const lowStockItems = inventoryItems.filter(item => parseInt(item.quantity) <= threshold);
-        if (lowStockItems.length === 0) {
-            lowStockDiv.innerHTML = '<span>No low stock items at the moment.</span>';
-        } else {
-            lowStockDiv.innerHTML = lowStockItems.map(item =>
-                `<div><strong>${item.name}</strong> (Batch: ${item.batchNumber || 'N/A'}) - <span style="color:#e74c3c;font-weight:600;">${item.quantity} left</span></div>`
-            ).join('');
-        }
-    }
-
-    // Load sales data for overview
-    function loadOverviewSales() {
-        const salesRef = firebase.ref(firebase.database, 'sales');
-        firebase.get(salesRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                updateOverviewSalesStats(data);
-            }
-        });
-    }
-    // Load inventory for low stock notifications
-    function loadOverviewLowStock() {
-        const inventoryRef = firebase.ref(firebase.database, 'inventory');
-        firebase.get(inventoryRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                const inventoryItems = Object.values(data);
-                updateLowStockNotifications(inventoryItems);
-            }
-        });
-    }
-    // On page load, update overview if section exists
-    if (document.getElementById('overview')) {
-        loadOverviewSales();
-        loadOverviewLowStock();
-    }
-
-    // Initial loading of various sections
-    loadProducts();
-    loadRawMaterials();
-    updateInventoryTable();
-    loadRetailOrdersHistory();
-    loadCustomerOrders();
-    loadCustomerFeedback();
-    loadProductExpiry();
-    loadBills(); // Load bills for Bills & Invoices section
-
-    // Load bills from Firebase for the Bills & Invoices section
-    function loadBills() {
-        const billsTableBody = document.getElementById('billsTableBody');
-        if (!billsTableBody) return;
-        
-        billsTableBody.innerHTML = '<tr><td colspan="6" class="loading-message">Loading bills...</td></tr>';
-        
-        // Get bills from Firebase
-        const billsRef = firebase.ref(firebase.database, 'bills');
-        firebase.get(billsRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                const bills = snapshot.val();
-                
-                // Convert to array and sort by timestamp (newest first)
-                const billsArray = Object.entries(bills)
-                    .map(([key, bill]) => ({...bill, key}))
-                    .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-                
-                if (billsArray.length === 0) {
-                    billsTableBody.innerHTML = '<tr><td colspan="6">No bills found.</td></tr>';
-                    return;
-                }
-                
-                // Clear loading message
-                billsTableBody.innerHTML = '';
-                
-                // Add bills to table
-                billsArray.forEach(bill => {
-                    const row = document.createElement('tr');
-                    
-                    row.innerHTML = `
-                        <td>${bill.billNumber || bill.key.slice(-6)}</td>
-                        <td>${bill.orderId ? bill.orderId.slice(-6) : 'N/A'}</td>
-                        <td>${bill.customerEmail || bill.customerName || 'Walk-in Customer'}</td>
-                        <td>${bill.completionDate || new Date(bill.timestamp).toLocaleDateString()}</td>
-                        <td>${bill.totalAmount || bill.total || 0} rupees</td>
-                        <td>
-                            <button class="view-bill-btn" data-id="${bill.key}">View</button>
-                            <button class="print-bill-btn" data-id="${bill.key}">Print</button>
-                        </td>
-                    `;
-                    
-                    billsTableBody.appendChild(row);
-                });
-                
-                // Add event listeners to action buttons
-                billsTableBody.querySelectorAll('.view-bill-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const billKey = this.dataset.id;
-                        const bill = billsArray.find(b => b.key === billKey);
-                        if (bill) {
-                            displayBill(bill);
-                        }
-                    });
-                });
-                
-                billsTableBody.querySelectorAll('.print-bill-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const billKey = this.dataset.id;
-                        const bill = billsArray.find(b => b.key === billKey);
-                        if (bill) {
-                            displayBill(bill, true); // true indicates to auto-trigger print
-                        }
-                    });
-                });
-            } else {
-                billsTableBody.innerHTML = '<tr><td colspan="6">No bills found.</td></tr>';
-            }
-        }).catch((error) => {
-            console.error("Error loading bills:", error);
-            billsTableBody.innerHTML = `<tr><td colspan="6">Error loading bills: ${error.message}</td></tr>`;
-        });
-    }
-
-    // Display bill in a modal with option to auto-print
-    function displayBill(bill, autoPrint = false) {
-        // Create modal container if it doesn't exist
-        let modalContainer = document.getElementById('billModal');
-        if (!modalContainer) {
-            modalContainer = document.createElement('div');
-            modalContainer.id = 'billModal';
-            modalContainer.className = 'modal';
-            document.body.appendChild(modalContainer);
-            
-            // Add modal styles if not already in CSS
-            if (!document.getElementById('modalStyles')) {
-                const styles = document.createElement('style');
-                styles.id = 'modalStyles';
-                styles.textContent = `
-                    .modal {
-                        display: none;
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        height: 100%;
-                        background-color: rgba(0,0,0,0.7);
-                        z-index: 1000;
-                        overflow: auto;
-                    }
-                    .modal-content {
-                        background-color: white;
-                        margin: 5% auto;
-                        padding: 20px;
-                        width: 80%;
-                        max-width: 600px;
-                        border-radius: 5px;
-                        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-                    }
-                    .close-btn {
-                        float: right;
-                        font-size: 24px;
-                        font-weight: bold;
-                        cursor: pointer;
-                    }
-                    .bill-header {
-                        text-align: center;
-                        margin-bottom: 20px;
-                    }
-                    .bill-details {
-                        margin-bottom: 20px;
-                    }
-                    .bill-table {
-                        width: 100%;
-                        border-collapse: collapse;
-                        margin-bottom: 20px;
-                    }
-                    .bill-table th, .bill-table td {
-                        border: 1px solid #ddd;
-                        padding: 8px;
-                        text-align: left;
-                    }
-                    .bill-table th {
-                        background-color: #f2f2f2;
-                    }
-                    .bill-footer {
-                        margin-top: 30px;
-                        text-align: center;
-                    }
-                    .bill-total {
-                        font-weight: bold;
-                        text-align: right;
-                        font-size: 18px;
-                        margin: 10px 0;
-                    }
-                    .print-btn {
-                        background-color: #4CAF50;
-                        color: white;
-                        border: none;
-                        padding: 10px 20px;
-                        border-radius: 4px;
-                        cursor: pointer;
-                        font-size: 16px;
-                        margin-top: 20px;
-                    }
-                    @media print {
-                        .modal-content {
-                            width: 100%;
-                            max-width: none;
-                            box-shadow: none;
-                            margin: 0;
-                            padding: 0;
-                        }
-                        .close-btn, .print-btn {
-                            display: none;
-                        }
-                        body * {
-                            visibility: hidden;
-                        }
-                        .modal, .modal-content, .bill-container, .bill-container * {
-                            visibility: visible;
-                        }
-                        .modal {
-                            position: absolute;
-                            left: 0;
-                            top: 0;
-                            margin: 0;
-                            padding: 15px;
-                            background-color: white;
-                        }
-                    }
-                `;
-                document.head.appendChild(styles);
-            }
-        }
-        
-        // Format items for display
-        const itemsHtml = bill.items.map(item => `
-            <tr>
-                <td>${item.product}</td>
-                <td>${item.quantity}</td>
-                <td>${item.unitPrice || productPrices[item.product] || 0} rupees</td>
-                <td>${item.total || (item.quantity * (item.unitPrice || productPrices[item.product] || 0))} rupees</td>
-            </tr>
-        `).join('');
-        
-        // Create bill HTML
-        modalContainer.innerHTML = `
-            <div class="modal-content">
-                <span class="close-btn">&times;</span>
-                <div class="bill-container">
-                    <div class="bill-header">
-                        <h2>BAKERY MANAGEMENT SYSTEM</h2>
-                        <h3>INVOICE</h3>
-                    </div>
-                    <div class="bill-details">
-                        <p><strong>Bill Number:</strong> ${bill.billNumber || bill.key.slice(-6)}</p>
+                        <p><strong>Bill Number:</strong> ${bill.billNumber || (bill.key ? bill.key.slice(-6) : 'N/A')}</p>
                         <p><strong>Order ID:</strong> ${bill.orderId ? bill.orderId.slice(-6) : 'N/A'}</p>
                         <p><strong>Date:</strong> ${bill.completionDate || new Date(bill.timestamp).toLocaleDateString()}</p>
                         <p><strong>Customer:</strong> ${bill.customerEmail || bill.customerName || 'Walk-in Customer'}</p>
@@ -2451,4 +1940,34 @@ document.addEventListener('DOMContentLoaded', function() {
         // Fallback: call directly (old behavior)
         loadRetailOrdersHistory();
     }
+
+    // Load available products into order product dropdown
+    function loadAvailableOrderProducts() {
+        const inventoryRef = firebase.ref(firebase.database, 'inventory');
+        firebase.get(inventoryRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const inventory = snapshot.val();
+                const availableProducts = products.filter(product => 
+                    Object.values(inventory).some(item => item.name === product.name && parseInt(item.quantity) > 0)
+                );
+                const orderProductSelect = document.querySelector('.orderProduct');
+                if (orderProductSelect) {
+                    orderProductSelect.innerHTML = '<option value="">Select Product</option>'; // Clear existing options
+                    availableProducts.forEach(product => {
+                        const option = document.createElement('option');
+                        option.value = product.name;
+                        option.textContent = product.name;
+                        orderProductSelect.appendChild(option);
+                    });
+                }
+            } else {
+                console.log("No inventory data available");
+            }
+        }).catch((error) => {
+            console.error("Error getting inventory data:", error);
+        });
+    }
+
+    // Call loadAvailableOrderProducts to populate the order product dropdown
+    loadAvailableOrderProducts();
 }); 

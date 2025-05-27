@@ -21,10 +21,6 @@
                         <i class="fas fa-boxes"></i>
                         <span>Raw Materials Menu</span>
                     </li>
-                    <li data-section="availability">
-                        <i class="fas fa-clipboard-check"></i>
-                        <span>Availability</span>
-                    </li>
                     <li data-section="retail-orders">
                         <i class="fas fa-shopping-cart"></i>
                         <span>Retail Orders</span>
@@ -53,48 +49,6 @@
                         </thead>
                         <tbody id="rawMaterialsTableBody">
                             <!-- Raw materials will be populated dynamically -->
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-            <!-- Availability Section -->
-            <section id="availability" class="content-section">
-                <h2>Availability</h2>
-                <form id="availabilityForm">
-                    <div class="raw-materials-table-container">
-                        <table class="raw-materials-table">
-                            <thead>
-                                <tr>
-                                    <th>S.No</th>
-                                    <th>Image</th>
-                                    <th>Name</th>
-                                    <th>Price</th>
-                                    <th>Quantity</th>
-                                    <th>Date of Stock</th>
-                                </tr>
-                            </thead>
-                            <tbody id="availabilityTableBody">
-                                <!-- Raw materials for availability will be populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
-                    <button type="submit" class="place-order-btn" style="margin-top:18px;">Save Availability</button>
-                </form>
-                <h3 style="margin-top:32px;">Saved Stock Entries</h3>
-                <div class="raw-materials-table-container">
-                    <table class="raw-materials-table">
-                        <thead>
-                            <tr>
-                                <th>S.No</th>
-                                <th>Image</th>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Quantity</th>
-                                <th>Date of Stock</th>
-                            </tr>
-                        </thead>
-                        <tbody id="savedStockTableBody">
-                            <!-- Saved stock entries will be shown here -->
                         </tbody>
                     </table>
                 </div>
@@ -250,6 +204,23 @@
                 <td><input type="date" class="avail-date" style="width:140px;"></td>
             `;
             availabilityTableBody.appendChild(row);
+        });
+
+        const addRawMaterialBtn = document.getElementById('addRawMaterialBtn');
+        const addRawMaterialTableBody = document.getElementById('addRawMaterialTableBody');
+
+        addRawMaterialBtn.addEventListener('click', function() {
+            const newRow = document.createElement('tr');
+            const rowCount = addRawMaterialTableBody.rows.length + 1;
+            newRow.innerHTML = `
+                <td>${rowCount}</td>
+                <td><img src="images/default.jpg" alt="New Material" class="material-image"></td>
+                <td><input type="text" class="material-name-input" placeholder="Enter name"></td>
+                <td><input type="text" class="material-price-input" placeholder="Enter price"></td>
+                <td><input type="number" min="0" class="quantity-input" placeholder="Enter quantity"></td>
+                <td><input type="date" class="date-input"></td>
+            `;
+            addRawMaterialTableBody.appendChild(newRow);
         });
       });
     </script>
