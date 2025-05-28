@@ -1,0 +1,986 @@
+{
+  "bills": {
+    "-OQEY07IYfmM-XX9qMgR": {
+      "billNumber": "BILL-2169839459",
+      "completionDate": "14/05/2025",
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "xyz",
+      "items": [
+        {
+          "product": "Cake",
+          "quantity": 20,
+          "total": 7000,
+          "unitPrice": 350
+        }
+      ],
+      "orderDate": "14/05/2025",
+      "orderId": "-OQEXsYZuBjcDuslGKGB",
+      "paymentMethod": "cash",
+      "phoneNumber": "999999999",
+      "timestamp": "2025-05-14T16:13:36.983Z",
+      "totalAmount": 7000
+    },
+    "-OQZ-jmxMNriAxUpvBwP": {
+      "completionDate": "18/05/2025",
+      "customerEmail": "customer@gmail.com",
+      "deliveryAddress": "address 2",
+      "items": [
+        {
+          "product": "Bread",
+          "quantity": 2,
+          "total": 70,
+          "unitPrice": 35
+        },
+        {
+          "product": "Cake",
+          "quantity": 3,
+          "total": 1050,
+          "unitPrice": 350
+        }
+      ],
+      "orderId": "-OQYoNNMxMgCwjvuTg1q",
+      "paymentMethod": "cash",
+      "phoneNumber": "999999999",
+      "status": "completed",
+      "timestamp": "2025-05-18T15:35:56.611Z",
+      "totalAmount": 1120
+    },
+    "-ORH65Rru90piLoNYU1E": {
+      "completionDate": "27/05/2025",
+      "customerEmail": "customer@gmail.com",
+      "deliveryAddress": "address3",
+      "items": [
+        {
+          "product": "Bread",
+          "quantity": 15,
+          "total": 525,
+          "unitPrice": 35
+        }
+      ],
+      "orderId": "-OQYqwUssMNbz4quMhg3",
+      "paymentMethod": "cash",
+      "phoneNumber": "9999999999",
+      "status": "completed",
+      "timestamp": "2025-05-27T14:26:19.396Z",
+      "totalAmount": 525
+    },
+    "-ORH7rb_O-rGDH0KUQHi": {
+      "completionDate": "27/05/2025",
+      "customerEmail": "customer@gmail.com",
+      "deliveryAddress": "addres2",
+      "items": [
+        {
+          "product": "Pastry",
+          "quantity": 20,
+          "total": 1800,
+          "unitPrice": 90
+        }
+      ],
+      "orderId": "-OQYrbXo_jmNK2rx10xS",
+      "paymentMethod": "cash",
+      "phoneNumber": "9999999999",
+      "status": "completed",
+      "timestamp": "2025-05-27T14:34:02.931Z",
+      "totalAmount": 1800
+    },
+    "-ORHHJ7-lRB0hJKOOpQN": {
+      "completionDate": "27/05/2025",
+      "customerEmail": "customer@gmail.com",
+      "deliveryAddress": "address11",
+      "items": [
+        {
+          "product": "Bread Pakora",
+          "quantity": 10,
+          "total": 400,
+          "unitPrice": 40
+        }
+      ],
+      "orderId": "-ORHHERaRgEH_oQdB0J8",
+      "paymentMethod": "cash",
+      "phoneNumber": "9999999999",
+      "status": "completed",
+      "timestamp": "2025-05-27T15:15:18.989Z",
+      "totalAmount": 400
+    },
+    "-ORHHtX2js3I8I6x0Wiw": {
+      "completionDate": "27/05/2025",
+      "customerEmail": "customer@gmail.com",
+      "deliveryAddress": "address12",
+      "items": [
+        {
+          "product": "Bread",
+          "quantity": 10,
+          "total": 350,
+          "unitPrice": 35
+        }
+      ],
+      "orderId": "-ORHHUqwKBrw45RoS-sj",
+      "paymentMethod": "cash",
+      "phoneNumber": "999999999",
+      "status": "completed",
+      "timestamp": "2025-05-27T15:17:52.199Z",
+      "totalAmount": 350
+    },
+    "-ORHIdKQgd3HRmYtPMu-": {
+      "completionDate": "27/05/2025",
+      "customerEmail": "customer@gmail.com",
+      "deliveryAddress": "arr",
+      "items": [
+        {
+          "product": "Bread",
+          "quantity": 10,
+          "total": 350,
+          "unitPrice": 35
+        }
+      ],
+      "orderId": "-ORHIHzuXYLxE6262idH",
+      "paymentMethod": "cash",
+      "phoneNumber": "9999999999",
+      "status": "completed",
+      "timestamp": "2025-05-27T15:21:08.351Z",
+      "totalAmount": 350
+    },
+    "-ORHJOxuLvI2qPEwm-Xs": {
+      "completionDate": "27/05/2025",
+      "customerEmail": "customer@gmail.com",
+      "deliveryAddress": "address",
+      "items": [
+        {
+          "product": "Bread",
+          "quantity": 10,
+          "total": 350,
+          "unitPrice": 35
+        }
+      ],
+      "orderId": "-ORHJLNFceOnBYybT50J",
+      "paymentMethod": "cash",
+      "phoneNumber": "999999999",
+      "status": "completed",
+      "timestamp": "2025-05-27T15:24:27.196Z",
+      "totalAmount": 350
+    }
+  },
+  "customerProductHistory": {
+    "U3JwnvAbpoOuIH1XdWjFYeZHcGR2": {
+      "Bread": 8,
+      "Bread Pakora": 2,
+      "Brownie": 1,
+      "Cake": 2,
+      "Pastry": 1
+    }
+  },
+  "customers": {
+    "U3JwnvAbpoOuIH1XdWjFYeZHcGR2": {
+      "email": "customer@gmail.com",
+      "mobile": "12345678",
+      "role": "customer"
+    }
+  },
+  "distributors": {
+    "8UwEnEoz2qeXSxOGQ3M39WhoX0C2": {
+      "email": "distrubuter@gmail.com",
+      "name": "Distributer",
+      "role": "distributor"
+    },
+    "distributor": {
+      "password": "dist123"
+    }
+  },
+  "expenses": {
+    "-OQDAKEpRAyAOH__QP3j": {
+      "amount": 5000,
+      "date": "2025-05-14",
+      "timestamp": "2025-05-14T09:50:30.914Z",
+      "type": "ingredients"
+    },
+    "-OQDAlELQ54jRmtlpS2b": {
+      "amount": 10000,
+      "date": "2025-05-14",
+      "timestamp": "2025-05-14T09:52:25.571Z",
+      "type": "rent"
+    },
+    "-OQERxrz_E6R2umSC7B7": {
+      "amount": 2000,
+      "date": "2025-05-14",
+      "timestamp": "2025-05-14T15:47:10.779Z",
+      "type": "ingredients"
+    }
+  },
+  "feedback": {
+    "-OQEUnu7JiTs8-xHWqKr": {
+      "comment": "good",
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "rating": 5,
+      "timestamp": "2025-05-14T15:59:36.402Z"
+    },
+    "-ORH7YeGs1rwlGrcNAxr": {
+      "comment": "Best product but packaging in low",
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "rating": 4,
+      "timestamp": "2025-05-27T14:32:41.268Z"
+    }
+  },
+  "inventory": {
+    "-ORH5t8QYVMTbSsh28l3": {
+      "batchNumber": "37169513",
+      "expiryDate": "2025-05-21",
+      "image": "bread.jpg",
+      "manufactureDate": "2025-05-18",
+      "name": "Bread",
+      "quantity": "50",
+      "status": "Expired",
+      "statusClass": "status-expired",
+      "timestamp": "2025-05-27T14:25:24.905Z"
+    },
+    "-ORH5x8C6Pdex4LYz8NV": {
+      "batchNumber": "77190541",
+      "expiryDate": "2025-05-30",
+      "image": "bread_pakora.jpg",
+      "manufactureDate": "2025-05-27",
+      "name": "Bread Pakora",
+      "quantity": "30",
+      "status": "Good",
+      "statusClass": "status-good",
+      "timestamp": "2025-05-27T14:25:41.275Z"
+    }
+  },
+  "managers": {
+    "LH9DhqsR0YSEfI1ddpXOfYyWqDA2": {
+      "email": "manager@gmail.com",
+      "name": "Manager",
+      "role": "manager"
+    }
+  },
+  "orders": {
+    "-OQEXsYZuBjcDuslGKGB": {
+      "billId": "-OQEY07IYfmM-XX9qMgR",
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "xyz",
+      "items": [
+        {
+          "product": "Cake",
+          "quantity": 20,
+          "total": 7000,
+          "unitPrice": 350
+        }
+      ],
+      "managerId": "LH9DhqsR0YSEfI1ddpXOfYyWqDA2",
+      "paymentMethod": "cash",
+      "phoneNumber": "999999999",
+      "status": "completed",
+      "statusUpdatedAt": "2025-05-14T16:13:36.983Z",
+      "timestamp": "2025-05-14T16:12:48.252Z",
+      "totalAmount": 7000
+    },
+    "-OQYoNNMxMgCwjvuTg1q": {
+      "billId": "-OQZ-jmxMNriAxUpvBwP",
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "address 2",
+      "items": [
+        {
+          "product": "Bread",
+          "quantity": 2,
+          "total": 70,
+          "unitPrice": 35
+        },
+        {
+          "product": "Cake",
+          "quantity": 3,
+          "total": 1050,
+          "unitPrice": 350
+        }
+      ],
+      "paymentMethod": "cash",
+      "phoneNumber": "999999999",
+      "status": "completed",
+      "timestamp": "2025-05-18T14:41:36.983Z",
+      "totalAmount": 1120
+    },
+    "-OQYqwUssMNbz4quMhg3": {
+      "billId": "-ORH65Rru90piLoNYU1E",
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "address3",
+      "items": [
+        {
+          "product": "Bread",
+          "quantity": 15,
+          "total": 525,
+          "unitPrice": 35
+        }
+      ],
+      "paymentMethod": "cash",
+      "phoneNumber": "9999999999",
+      "status": "completed",
+      "timestamp": "2025-05-18T14:52:57.377Z",
+      "totalAmount": 525
+    },
+    "-OQYrbXo_jmNK2rx10xS": {
+      "billId": "-ORH7rb_O-rGDH0KUQHi",
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "addres2",
+      "items": [
+        {
+          "product": "Pastry",
+          "quantity": 20,
+          "total": 1800,
+          "unitPrice": 90
+        }
+      ],
+      "paymentMethod": "cash",
+      "phoneNumber": "9999999999",
+      "status": "completed",
+      "timestamp": "2025-05-18T14:55:54.203Z",
+      "totalAmount": 1800
+    },
+    "-ORH7HqZA6MuJjS-M4H0": {
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "address1",
+      "items": [
+        {
+          "product": "Brownie",
+          "quantity": 2,
+          "total": 50,
+          "unitPrice": 25
+        }
+      ],
+      "paymentMethod": "cash",
+      "phoneNumber": "999999999",
+      "status": "pending",
+      "timestamp": "2025-05-27T14:31:16.558Z",
+      "totalAmount": 50
+    },
+    "-ORHCGKrU7Kplvvo-ji1": {
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "address3",
+      "items": [
+        {
+          "product": "Bread",
+          "quantity": 20,
+          "total": 700,
+          "unitPrice": 35
+        }
+      ],
+      "paymentMethod": "cash",
+      "phoneNumber": "9999999999",
+      "status": "pending",
+      "timestamp": "2025-05-27T14:52:58.910Z",
+      "totalAmount": 700
+    },
+    "-ORHCPd1fSzadbJNbZ79": {
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "addrees4",
+      "items": [
+        {
+          "product": "Bread Pakora",
+          "quantity": 4,
+          "total": 160,
+          "unitPrice": 40
+        }
+      ],
+      "paymentMethod": "cash",
+      "phoneNumber": "9999999999",
+      "status": "pending",
+      "timestamp": "2025-05-27T14:53:43.206Z",
+      "totalAmount": 160
+    },
+    "-ORHHERaRgEH_oQdB0J8": {
+      "billId": "-ORHHJ7-lRB0hJKOOpQN",
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "address11",
+      "items": [
+        {
+          "product": "Bread Pakora",
+          "quantity": 10,
+          "total": 400,
+          "unitPrice": 40
+        }
+      ],
+      "paymentMethod": "cash",
+      "phoneNumber": "9999999999",
+      "status": "completed",
+      "timestamp": "2025-05-27T15:14:50.570Z",
+      "totalAmount": 400
+    },
+    "-ORHHUqwKBrw45RoS-sj": {
+      "billId": "-ORHHtX2js3I8I6x0Wiw",
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "address12",
+      "items": [
+        {
+          "product": "Bread",
+          "quantity": 10,
+          "total": 350,
+          "unitPrice": 35
+        }
+      ],
+      "paymentMethod": "cash",
+      "phoneNumber": "999999999",
+      "status": "completed",
+      "timestamp": "2025-05-27T15:15:56.854Z",
+      "totalAmount": 350
+    },
+    "-ORHIHzuXYLxE6262idH": {
+      "billId": "-ORHIdKQgd3HRmYtPMu-",
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "arr",
+      "items": [
+        {
+          "product": "Bread",
+          "quantity": 10,
+          "total": 350,
+          "unitPrice": 35
+        }
+      ],
+      "paymentMethod": "cash",
+      "phoneNumber": "9999999999",
+      "status": "completed",
+      "timestamp": "2025-05-27T15:19:30.742Z",
+      "totalAmount": 350
+    },
+    "-ORHIkxDWT1wJwaSIcp5": {
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "addr",
+      "items": [
+        {
+          "product": "Bread",
+          "quantity": 10,
+          "total": 350,
+          "unitPrice": 35
+        }
+      ],
+      "paymentMethod": "cash",
+      "phoneNumber": "99999999",
+      "status": "pending",
+      "timestamp": "2025-05-27T15:21:31.996Z",
+      "totalAmount": 350
+    },
+    "-ORHJLNFceOnBYybT50J": {
+      "billId": "-ORHJOxuLvI2qPEwm-Xs",
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "address",
+      "items": [
+        {
+          "product": "Bread",
+          "quantity": 10,
+          "total": 350,
+          "unitPrice": 35
+        }
+      ],
+      "paymentMethod": "cash",
+      "phoneNumber": "999999999",
+      "status": "completed",
+      "timestamp": "2025-05-27T15:24:04.065Z",
+      "totalAmount": 350
+    },
+    "undefined": {
+      "billId": "-OQEY07IYfmM-XX9qMgR",
+      "customerEmail": "customer@gmail.com",
+      "customerId": "U3JwnvAbpoOuIH1XdWjFYeZHcGR2",
+      "deliveryAddress": "xyz",
+      "items": [
+        {
+          "product": "Cake",
+          "quantity": 20,
+          "total": 7000,
+          "unitPrice": 350
+        }
+      ],
+      "managerId": "LH9DhqsR0YSEfI1ddpXOfYyWqDA2",
+      "paymentMethod": "cash",
+      "phoneNumber": "999999999",
+      "processed": true,
+      "status": "completed",
+      "statusUpdatedAt": "2025-05-14T16:13:36.983Z",
+      "timestamp": "2025-05-14T16:12:48.252Z",
+      "totalAmount": 7000
+    }
+  },
+  "products": {
+    "Bread": {
+      "image": "bread.jpg",
+      "price": 35
+    },
+    "Bread Pakora": {
+      "image": "bread_pakora.jpg",
+      "price": 40
+    },
+    "Brownie": {
+      "image": "brownie.jpg",
+      "price": 25
+    },
+    "Cake": {
+      "image": "cake.jpg",
+      "price": 350
+    },
+    "Cheese Sandwich": {
+      "image": "cheese_sandwitch.jpg",
+      "price": 70
+    },
+    "Cookies": {
+      "image": "cookies.jpg",
+      "price": 75
+    },
+    "Croissant": {
+      "image": "croissant.jpg",
+      "price": 70
+    },
+    "Cup Cake": {
+      "image": "cup_cake.jpg",
+      "price": 25
+    },
+    "Dispasand": {
+      "image": "dilpasand.jpg",
+      "price": 10
+    },
+    "Egg Puff": {
+      "image": "egg_puff.jpg",
+      "price": 23
+    },
+    "Garlic Loaf": {
+      "image": "garlic_loaf.jpg",
+      "price": 50
+    },
+    "Masala Bun": {
+      "image": "masala_bun.jpg",
+      "price": 18
+    },
+    "Pastry": {
+      "image": "pastry.jpg",
+      "price": 90
+    },
+    "Pav Bread": {
+      "image": "pav_bread.jpg",
+      "price": 42
+    },
+    "Rusk": {
+      "image": "rusk.jpg",
+      "price": 135
+    },
+    "Samosa": {
+      "image": "samosa.jpg",
+      "price": 20
+    },
+    "Veg Puff": {
+      "image": "Veg_Puff.jpg",
+      "price": 18
+    }
+  },
+  "raw": [
+    {
+      "name": "Maida (5kg)",
+      "price": "400 rupees"
+    },
+    {
+      "name": "Sugar (5kg)",
+      "price": "735 rupees"
+    },
+    {
+      "name": "Salt (1kg)",
+      "price": "78 rupees"
+    },
+    {
+      "name": "Yeast (500gm)",
+      "price": "440 rupees"
+    },
+    {
+      "name": "Baking Powder (500gm)",
+      "price": "89 rupees"
+    },
+    {
+      "name": "Baking Soda (500gm)",
+      "price": "149 rupees"
+    },
+    {
+      "name": "Butter (1kg)",
+      "price": "490 rupees"
+    },
+    {
+      "name": "Oil (5 liters)",
+      "price": "420 rupees"
+    },
+    {
+      "name": "Milk (1 litre)",
+      "price": "48 rupees"
+    },
+    {
+      "name": "Eggs (30 pieces tray)",
+      "price": "165 rupees"
+    },
+    {
+      "name": "Cream (whipping, 1kg)",
+      "price": "280 rupees"
+    },
+    {
+      "name": "Cheese (processed, 1kg)",
+      "price": "418 rupees"
+    },
+    {
+      "name": "Cocoa Powder (500gm)",
+      "price": "499 rupees"
+    },
+    {
+      "name": "Chocolate (compound, 1kg)",
+      "price": "120 rupees"
+    },
+    {
+      "name": "Dry Fruits (mixed, 500gm)",
+      "price": "700 rupees"
+    },
+    {
+      "name": "Besan (gram flour, 1kg)",
+      "price": "160 rupees"
+    },
+    {
+      "name": "Jam (mixed fruit, 500gm)",
+      "price": "190 rupees"
+    },
+    {
+      "name": "Garlic (fresh, 500gm)",
+      "price": "80 rupees"
+    },
+    {
+      "name": "Potatoes (for samosa, 5kg)",
+      "price": "135 rupees"
+    }
+  ],
+  "retailOrders": {
+    "-OQDAXuvzvz2dmSs6V-0": {
+      "date": "2025-05-14",
+      "items": [
+        {
+          "materialIndex": 0,
+          "materialName": "Maida (5kg)",
+          "materialPrice": "400 rupees",
+          "quantity": 50,
+          "total": 20000
+        }
+      ],
+      "managerEmail": "manager@gmail.com",
+      "managerId": "LH9DhqsR0YSEfI1ddpXOfYyWqDA2",
+      "status": "Pending",
+      "timestamp": "2025-05-14T09:51:26.920Z",
+      "total": 20000
+    },
+    "-OQES2tIF3B9ZAe-A9Cs": {
+      "items": [
+        {
+          "material": "Sugar (5kg)",
+          "price": "735 rupees",
+          "quantity": 5
+        }
+      ],
+      "managerEmail": "manager@gmail.com",
+      "managerId": "LH9DhqsR0YSEfI1ddpXOfYyWqDA2",
+      "managerName": "Manager",
+      "status": "pending",
+      "timestamp": "2025-05-14T15:47:35.439Z"
+    },
+    "-OQESq28qw9F_Ge0-00S": {
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "items": [
+        {
+          "material": "Sugar (5kg)",
+          "price": "735 rupees",
+          "quantity": 2000
+        }
+      ],
+      "managerEmail": "manager@gmail.com",
+      "managerId": "LH9DhqsR0YSEfI1ddpXOfYyWqDA2",
+      "managerName": "Manager",
+      "status": "completed",
+      "statusUpdatedAt": "2025-05-27T14:29:32.997Z",
+      "timestamp": "2025-05-14T15:51:00.873Z"
+    },
+    "-OQETVHJl7ZEIYtavkcR": {
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "items": [
+        {
+          "material": "Baking Powder (500gm)",
+          "price": "89 rupees",
+          "quantity": 1600
+        }
+      ],
+      "managerEmail": "manager@gmail.com",
+      "managerId": "LH9DhqsR0YSEfI1ddpXOfYyWqDA2",
+      "managerName": "Manager",
+      "status": "completed",
+      "statusUpdatedAt": "2025-05-14T16:01:38.656Z",
+      "timestamp": "2025-05-14T15:53:53.876Z"
+    },
+    "-OQZ0rQrzGMwN4mW3ZUE": {
+      "items": [
+        {
+          "material": "Oil (5 liters)",
+          "price": "420 rupees",
+          "quantity": 50
+        }
+      ],
+      "managerEmail": "manager@gmail.com",
+      "managerId": "LH9DhqsR0YSEfI1ddpXOfYyWqDA2",
+      "managerName": "Manager",
+      "status": "pending",
+      "timestamp": "2025-05-18T15:40:50.037Z"
+    },
+    "-OQZ2aGsgkqvlTEZIpSm": {
+      "items": [
+        {
+          "material": "Yeast (500gm)",
+          "price": "440 rupees",
+          "quantity": 20
+        }
+      ],
+      "managerEmail": "manager@gmail.com",
+      "managerId": "LH9DhqsR0YSEfI1ddpXOfYyWqDA2",
+      "managerName": "Manager",
+      "status": "pending",
+      "timestamp": "2025-05-18T15:48:24.059Z"
+    },
+    "-OQZ2wQjAFUqc9jgNCGI": {
+      "items": [
+        {
+          "material": "Baking Powder (500gm)",
+          "price": "89 rupees",
+          "quantity": 20
+        }
+      ],
+      "managerEmail": "manager@gmail.com",
+      "managerId": "LH9DhqsR0YSEfI1ddpXOfYyWqDA2",
+      "managerName": "Manager",
+      "status": "cancelled",
+      "statusUpdatedAt": "2025-05-18T15:50:18.567Z",
+      "timestamp": "2025-05-18T15:49:54.778Z"
+    },
+    "-OQZ3ZcgYIEITv72-29d": {
+      "items": [
+        {
+          "material": "Milk (1 litre)",
+          "price": "48 rupees",
+          "quantity": 50
+        }
+      ],
+      "managerEmail": "manager@gmail.com",
+      "managerId": "LH9DhqsR0YSEfI1ddpXOfYyWqDA2",
+      "managerName": "Manager",
+      "status": "pending",
+      "timestamp": "2025-05-18T15:52:39.445Z"
+    },
+    "-OQZ8lKHXlEW5HV6ufRz": {
+      "items": [
+        {
+          "material": "Cream (whipping, 1kg)",
+          "price": "280 rupees",
+          "quantity": 25
+        }
+      ],
+      "managerEmail": "manager@gmail.com",
+      "managerId": "LH9DhqsR0YSEfI1ddpXOfYyWqDA2",
+      "managerName": "Manager",
+      "status": "pending",
+      "timestamp": "2025-05-18T16:15:22.169Z"
+    },
+    "-OQZ8naAeI0rOaYTTAXI": {
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "items": [
+        {
+          "material": "Oil (5 liters)",
+          "price": "420 rupees",
+          "quantity": 50
+        }
+      ],
+      "managerEmail": "manager@gmail.com",
+      "managerId": "LH9DhqsR0YSEfI1ddpXOfYyWqDA2",
+      "managerName": "Manager",
+      "status": "completed",
+      "statusUpdatedAt": "2025-05-27T14:30:11.778Z",
+      "timestamp": "2025-05-18T16:15:31.443Z"
+    }
+  },
+  "stock": {
+    "-OQYs8uq0e6ybyfJ7sD2": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 0,
+      "materialName": "Maida (5kg)",
+      "materialPrice": "400 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8uq0e6ybyfJ7sD3": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 1,
+      "materialName": "Sugar (5kg)",
+      "materialPrice": "735 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8ur2riS1R3-Pj0j": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 2,
+      "materialName": "Salt (1kg)",
+      "materialPrice": "78 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8ur2riS1R3-Pj0k": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 3,
+      "materialName": "Yeast (500gm)",
+      "materialPrice": "440 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8usdS0pbA1qDt5D": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 4,
+      "materialName": "Baking Powder (500gm)",
+      "materialPrice": "89 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8usdS0pbA1qDt5E": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 5,
+      "materialName": "Baking Soda (500gm)",
+      "materialPrice": "149 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8usdS0pbA1qDt5F": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 6,
+      "materialName": "Butter (1kg)",
+      "materialPrice": "490 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8ut5KsRGO85u-YG": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 7,
+      "materialName": "Oil (5 liters)",
+      "materialPrice": "420 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8ut5KsRGO85u-YH": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 8,
+      "materialName": "Milk (1 litre)",
+      "materialPrice": "48 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8ut5KsRGO85u-YI": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 9,
+      "materialName": "Eggs (30 pieces tray)",
+      "materialPrice": "165 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8ut5KsRGO85u-YJ": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 10,
+      "materialName": "Cream (whipping, 1kg)",
+      "materialPrice": "280 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8uuaSiMY0jAv6dm": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 11,
+      "materialName": "Cheese (processed, 1kg)",
+      "materialPrice": "418 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8uuaSiMY0jAv6dn": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 12,
+      "materialName": "Cocoa Powder (500gm)",
+      "materialPrice": "499 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8uuaSiMY0jAv6do": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 13,
+      "materialName": "Chocolate (compound, 1kg)",
+      "materialPrice": "120 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8uuaSiMY0jAv6dp": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 14,
+      "materialName": "Dry Fruits (mixed, 500gm)",
+      "materialPrice": "700 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8uvY5zkhGGEMVJD": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 15,
+      "materialName": "Besan (gram flour, 1kg)",
+      "materialPrice": "160 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8uvY5zkhGGEMVJE": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 16,
+      "materialName": "Jam (mixed fruit, 500gm)",
+      "materialPrice": "190 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8uwmpOLqcO6zURu": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 17,
+      "materialName": "Garlic (fresh, 500gm)",
+      "materialPrice": "80 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    },
+    "-OQYs8uwmpOLqcO6zURv": {
+      "date": "2025-05-18",
+      "distributorId": "8UwEnEoz2qeXSxOGQ3M39WhoX0C2",
+      "materialIndex": 18,
+      "materialName": "Potatoes (for samosa, 5kg)",
+      "materialPrice": "135 rupees",
+      "quantity": 20,
+      "timestamp": "2025-05-18T14:58:24.300Z"
+    }
+  }
+}
