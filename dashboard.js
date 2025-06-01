@@ -1970,4 +1970,104 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Call loadAvailableOrderProducts to populate the order product dropdown
     loadAvailableOrderProducts();
+
+    // --- Overview Section Visualization ---
+    function renderOverviewChartAndStats() {
+        const ctx = document.getElementById('overviewSalesChart')?.getContext('2d');
+        if (!ctx) {
+            console.error('overviewSalesChart canvas not found');
+            return;
+        }
+        let overviewChart = null;
+        // Fetch orders data from Firebase
+        const ordersRef = firebase.ref(firebase.database, 'orders');
+        firebase.get(ordersRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                // Only use completed orders as sales
+                const completedOrders = Object.values(data).filter(order => order.status === 'completed');
+                console.log('Completed orders for overview:', completedOrders);
+                // Prepare data for the last 7 days
+                const days = [];
+                const salesByDay = {};
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date();
+                    d.setDate(d.getDate() - i);
+                    const key = d.toISOString().split('T')[0];
+                    days.push(key);
+                    salesByDay[key] = 0;
+                }
+                completedOrders.forEach(order => {
+                    const orderDate = order.timestamp ? order.timestamp.split('T')[0] : null;
+                    if (orderDate && salesByDay[orderDate] !== undefined) {
+                        salesByDay[orderDate] += parseFloat(order.totalAmount || 0);
+                    }
+                });
+                // Chart.js expects labels and data arrays
+                const labels = days.map(d => {
+                    const date = new Date(d);
+                    return date.toLocaleDateString('en-US', { weekday: 'short' });
+                });
+                const salesData = days.map(d => salesByDay[d]);
+                // Render chart
+                if (window.overviewChartInstance) {
+                    window.overviewChartInstance.data.labels = labels;
+                    window.overviewChartInstance.data.datasets[0].data = salesData;
+                    window.overviewChartInstance.update();
+                } else {
+                    window.overviewChartInstance = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Sales (₹)',
+                                data: salesData,
+                                backgroundColor: 'rgba(52, 152, 219, 0.5)',
+                                borderColor: '#3498db',
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true } }
+                        }
+                    });
+                }
+                // Update stats cards
+                const today = new Date().toISOString().split('T')[0];
+                const oneWeekAgo = new Date();
+                oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+                const oneWeekAgoStr = oneWeekAgo.toISOString().split('T')[0];
+                const oneMonthAgo = new Date();
+                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                const oneMonthAgoStr = oneMonthAgo.toISOString().split('T')[0];
+                let todaySales = 0, weekSales = 0, monthSales = 0;
+                completedOrders.forEach(order => {
+                    const orderDate = order.timestamp ? order.timestamp.split('T')[0] : null;
+                    const orderTotal = parseFloat(order.totalAmount || 0);
+                    if (orderDate === today) todaySales += orderTotal;
+                    if (orderDate >= oneWeekAgoStr) weekSales += orderTotal;
+                    if (orderDate >= oneMonthAgoStr) monthSales += orderTotal;
+                });
+                document.getElementById('overviewTodaySales').textContent = `₹${todaySales.toFixed(2)}`;
+                document.getElementById('overviewWeekSales').textContent = `₹${weekSales.toFixed(2)}`;
+                document.getElementById('overviewMonthSales').textContent = `₹${monthSales.toFixed(2)}`;
+            } else {
+                console.warn('No orders data found for overview');
+                document.getElementById('overviewTodaySales').textContent = '₹0.00';
+                document.getElementById('overviewWeekSales').textContent = '₹0.00';
+                document.getElementById('overviewMonthSales').textContent = '₹0.00';
+                if (window.overviewChartInstance) {
+                    window.overviewChartInstance.data.labels = [];
+                    window.overviewChartInstance.data.datasets[0].data = [];
+                    window.overviewChartInstance.update();
+                }
+            }
+        }).catch((err) => {
+            console.error('Error loading orders data for overview:', err);
+        });
+    }
+    // Call this on DOMContentLoaded
+    renderOverviewChartAndStats();
 }); 

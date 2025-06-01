@@ -6,6 +6,7 @@
     <title>Manager Dashboard - Bakery Management System</title>
     <link rel="stylesheet" href="dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="dashboard-container">
@@ -75,6 +76,9 @@
                         <h3>This Month</h3>
                         <p class="amount" id="overviewMonthSales">₹0.00</p>
                     </div>
+                </div>
+                <div style="margin: 32px 0 0 0;">
+                    <canvas id="overviewSalesChart" height="80"></canvas>
                 </div>
                 <div class="low-stock-section" id="lowStockSection" style="margin-top:30px;">
                     <h3 style="margin-bottom:10px;">Low Stock Notifications</h3>
@@ -350,7 +354,6 @@
             </section>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="module">
       // Import the functions you need from the SDKs you need
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.7.1/firebase-app.js";
