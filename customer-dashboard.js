@@ -607,8 +607,62 @@ document.addEventListener('DOMContentLoaded', function() {
         const recommendedList = document.getElementById('recommendedList');
         if (!recommendedList) return;
         
+        // Add custom styles for recommended product cards (if not already present)
+        if (!document.getElementById('specialCakeStyles')) {
+            const style = document.createElement('style');
+            style.id = 'specialCakeStyles';
+            style.textContent = `
+                .special-cake-grid {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 24px;
+                    margin-top: 18px;
+                    justify-content: center;
+                }
+                .special-cake-card {
+                    background: #fffdfa;
+                    border: 1.5px solid #f7b500;
+                    border-radius: 14px;
+                    box-shadow: 0 4px 18px rgba(44,62,80,0.10);
+                    width: 220px;
+                    padding: 18px 16px 14px 16px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    transition: box-shadow 0.2s, transform 0.2s;
+                    position: relative;
+                }
+                .special-cake-card:hover {
+                    box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+                    transform: translateY(-4px) scale(1.03);
+                    border-color: #ff9800;
+                }
+                .special-cake-img {
+                    width: 100%;
+                    height: 140px;
+                    object-fit: cover;
+                    border-radius: 10px;
+                    margin-bottom: 14px;
+                    border: 1px solid #eee;
+                    background: #f8f8f8;
+                }
+                .special-cake-code {
+                    font-size: 1.15em;
+                    font-weight: 700;
+                    color: #f7b500;
+                    letter-spacing: 1px;
+                    margin-bottom: 6px;
+                }
+                .special-cake-price {
+                    font-size: 1.08em;
+                    font-weight: 500;
+                    color: #333;
+                    margin-bottom: 4px;
+                }
+            `;
+            document.head.appendChild(style);
+        }
         recommendedList.innerHTML = '<div class="loading-message">Loading recommendations...</div>';
-        
         // Use completed orders as sales
         const ordersRef = firebase.ref(firebase.database, 'orders');
         firebase.get(ordersRef).then((snapshot) => {
@@ -631,19 +685,20 @@ document.addEventListener('DOMContentLoaded', function() {
                     .slice(0, 10)
                     .map(entry => entry[0]);
                 recommendedList.innerHTML = '';
+                const grid = document.createElement('div');
+                grid.className = 'special-cake-grid';
                 topProducts.forEach(productName => {
                     const card = document.createElement('div');
-                    card.className = 'menu-item-card';
+                    card.className = 'special-cake-card';
                     const imagePath = `images/${productImages[productName] || 'default.jpg'}`;
                     card.innerHTML = `
-                        <img src="${imagePath}" alt="${productName}" class="menu-item-img" onerror="this.onerror=null;this.src='images/default.jpg';">
-                        <div class="menu-item-info">
-                            <div class="menu-item-name">${productName}</div>
-                            <div class="menu-item-price">${productPrices[productName] || 0} rupees</div>
-                        </div>
+                        <img src="${imagePath}" alt="${productName}" class="special-cake-img" onerror="this.onerror=null;this.src='images/default.jpg';">
+                        <div class="special-cake-code">${productName}</div>
+                        <div class="special-cake-price">${productPrices[productName] || 0} rupees</div>
                     `;
-                    recommendedList.appendChild(card);
+                    grid.appendChild(card);
                 });
+                recommendedList.appendChild(grid);
             } else {
                 recommendedList.innerHTML = '<div>No completed orders available for recommendations.</div>';
             }
@@ -832,4 +887,110 @@ document.addEventListener('DOMContentLoaded', function() {
             qrCodeContainer.style.display = this.value === 'netbanking' ? 'block' : 'none';
         });
     }
+
+    // --- Special Cake Order Button and Display ---
+    function addSpecialCakeOrderButton() {
+        const menuSection = document.getElementById('menu');
+        if (!menuSection) return;
+        let btn = document.getElementById('specialCakeOrderBtn');
+        if (!btn) {
+            btn = document.createElement('button');
+            btn.id = 'specialCakeOrderBtn';
+            btn.textContent = 'Click here for special CAKE order';
+            btn.style = 'margin: 20px 0; padding: 10px 20px; font-size: 1.1em; background: #f7b500; color: #222; border: none; border-radius: 6px; cursor: pointer;';
+            menuSection.insertBefore(btn, menuSection.querySelector('.menu-list'));
+        }
+        btn.onclick = function() {
+            showSpecialCakes();
+        };
+    }
+
+    function showSpecialCakes() {
+        const menuList = document.getElementById('menuList');
+        if (!menuList) return;
+        menuList.innerHTML = '<div class="loading-message">Loading special cakes...</div>';
+        // Add custom styles for special cake cards
+        if (!document.getElementById('specialCakeStyles')) {
+            const style = document.createElement('style');
+            style.id = 'specialCakeStyles';
+            style.textContent = `
+                .special-cake-grid {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 24px;
+                    margin-top: 18px;
+                    justify-content: center;
+                }
+                .special-cake-card {
+                    background: #fffdfa;
+                    border: 1.5px solid #f7b500;
+                    border-radius: 14px;
+                    box-shadow: 0 4px 18px rgba(44,62,80,0.10);
+                    width: 220px;
+                    padding: 18px 16px 14px 16px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    transition: box-shadow 0.2s, transform 0.2s;
+                    position: relative;
+                }
+                .special-cake-card:hover {
+                    box-shadow: 0 8px 32px rgba(44,62,80,0.18);
+                    transform: translateY(-4px) scale(1.03);
+                    border-color: #ff9800;
+                }
+                .special-cake-img {
+                    width: 100%;
+                    height: 140px;
+                    object-fit: cover;
+                    border-radius: 10px;
+                    margin-bottom: 14px;
+                    border: 1px solid #eee;
+                    background: #f8f8f8;
+                }
+                .special-cake-code {
+                    font-size: 1.15em;
+                    font-weight: 700;
+                    color: #f7b500;
+                    letter-spacing: 1px;
+                    margin-bottom: 6px;
+                }
+                .special-cake-price {
+                    font-size: 1.08em;
+                    font-weight: 500;
+                    color: #333;
+                    margin-bottom: 4px;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        // Fetch cake prices from price.txt
+        fetch('images/Cakes/price.txt').then(r => r.text()).then(text => {
+            const priceMap = {};
+            text.split(',').forEach(line => {
+                const [code, price] = line.replace(/\s/g, '').split(':');
+                if (code && price) priceMap[code] = price;
+            });
+            // List of cake codes
+            const cakes = [
+                'cake01','cake02','cake03','cake04','cake05','cake06','cake07','cake08','cake09'
+            ];
+            menuList.innerHTML = '<div style="margin-bottom:12px;font-weight:bold;color:#444;">Select a cake and enter its code in the description when ordering.</div>';
+            const grid = document.createElement('div');
+            grid.className = 'special-cake-grid';
+            cakes.forEach(code => {
+                const card = document.createElement('div');
+                card.className = 'special-cake-card';
+                card.innerHTML = `
+                    <img src="images/Cakes/${code}.jpg" alt="${code}" class="special-cake-img" onerror="this.onerror=null;this.src='images/default.jpg';">
+                    <div class="special-cake-code">${code.toUpperCase()}</div>
+                    <div class="special-cake-price">${priceMap[code] ? priceMap[code] + ' rupees' : 'Price N/A'}</div>
+                `;
+                grid.appendChild(card);
+            });
+            menuList.appendChild(grid);
+        });
+    }
+    // Call this after DOMContentLoaded
+    addSpecialCakeOrderButton();
 }); 
