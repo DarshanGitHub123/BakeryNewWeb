@@ -86,25 +86,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Load available products into dropdown
     function loadAvailableProducts() {
-        const inventoryRef = firebase.ref(firebase.database, 'inventory');
-        firebase.get(inventoryRef).then((snapshot) => {
-            if (snapshot.exists()) {
-                const inventory = snapshot.val();
-                const availableProducts = products.filter(product => 
-                    Object.values(inventory).some(item => item.name === product.name && parseInt(item.quantity) > 0)
-                );
-                productSelect.innerHTML = ''; // Clear existing options
-                availableProducts.forEach(product => {
+        // List all products for manager to add to inventory
+        productSelect.innerHTML = '';
+        products.forEach(product => {
             const option = document.createElement('option');
             option.value = product.name;
             option.textContent = product.name;
             productSelect.appendChild(option);
-                });
-            } else {
-                console.log("No inventory data available");
-            }
-        }).catch((error) => {
-            console.error("Error getting inventory data:", error);
         });
     }
 
@@ -1823,8 +1811,33 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert('Order is already completed.');
                     return;
                 }
+                // --- Decrease inventory for each product in the order ---
+                const inventoryRef = firebase.ref(firebase.database, 'inventory');
+                firebase.get(inventoryRef).then((invSnapshot) => {
+                    if (invSnapshot.exists()) {
+                        const inventory = invSnapshot.val();
+                        let inventoryChanged = false;
+                        order.items.forEach(item => {
+                            // Find the first inventory entry for this product with quantity > 0
+                            for (const key in inventory) {
+                                if (inventory[key].name === item.product && parseInt(inventory[key].quantity) > 0) {
+                                    const availableQty = parseInt(inventory[key].quantity);
+                                    const reduceQty = Math.min(availableQty, parseInt(item.quantity));
+                                    inventory[key].quantity = availableQty - reduceQty;
+                                    inventoryChanged = true;
+                                    break; // Only reduce from one batch for simplicity
+                                }
+                            }
+                        });
+                        if (inventoryChanged) {
+                            firebase.set(inventoryRef, inventory).then(() => {
+                                updateInventoryTable();
+                            });
+                        }
+                    }
+                });
+                // --- Continue with marking order as completed and generating bill ---
                 order.status = 'completed';
-                // If order does not have a bill, generate one
                 if (!order.billId) {
                     // Prepare bill object
                     const bill = {
