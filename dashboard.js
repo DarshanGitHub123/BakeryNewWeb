@@ -1724,7 +1724,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const ordersTableBody = document.querySelector('#orders .orders-list tbody');
         if (!ordersTableBody) return;
 
-        ordersTableBody.innerHTML = '<tr><td colspan="6" class="loading-message">Loading customer orders...</td></tr>';
+        ordersTableBody.innerHTML = '<tr><td colspan="7" class="loading-message">Loading customer orders...</td></tr>';
 
         // Get all orders from Firebase
         const ordersRef = firebase.ref(firebase.database, 'orders');
@@ -1737,7 +1737,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
 
                 if (ordersArray.length === 0) {
-                    ordersTableBody.innerHTML = '<tr><td colspan="6">No customer orders found.</td></tr>';
+                    ordersTableBody.innerHTML = '<tr><td colspan="7">No customer orders found.</td></tr>';
                     return;
                 }
 
@@ -1748,7 +1748,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ordersArray.forEach(order => {
                     // Group products for display
                     let productsDisplay = order.items.map(item => 
-                        `${item.product} x${item.quantity}${item.description ? `<br><small>${item.description}</small>` : ''}`
+                        `${item.product} x${item.quantity}`
                     ).join('<br>');
                     // Format date
                     const orderDate = new Date(order.timestamp).toLocaleDateString();
@@ -1771,6 +1771,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <td>${order.id.slice(-6)}</td>
                         <td>${order.customerEmail || 'N/A'}</td>
                         <td>${productsDisplay}</td>
+                        <td>${order.description ? order.description : '-'}</td>
                         <td>₹${total}</td>
                         <td><span class="status-${status}">${status}</span></td>
                         <td>${action}</td>
@@ -1793,11 +1794,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     });
                 });
             } else {
-                ordersTableBody.innerHTML = '<tr><td colspan="6">No customer orders found.</td></tr>';
+                ordersTableBody.innerHTML = '<tr><td colspan="7">No customer orders found.</td></tr>';
             }
         }).catch((error) => {
             console.error("Error loading customer orders:", error);
-            ordersTableBody.innerHTML = `<tr><td colspan="6">Error loading orders: ${error.message}</td></tr>`;
+            ordersTableBody.innerHTML = `<tr><td colspan="7">Error loading orders: ${error.message}</td></tr>`;
         });
     }
     // Execute order: set status to completed and generate bill if not present

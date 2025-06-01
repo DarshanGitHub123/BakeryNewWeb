@@ -124,10 +124,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <label>Quantity</label>
                 <input type="number" class="orderQuantity" min="1" required>
             </div>
-            <div class="form-group">
-                <label>Description</label>
-                <input type="text" class="orderDescription" placeholder="e.g. Cake size, design, etc.">
-            </div>
             <div class="form-group product-image-preview"></div>
             <button type="button" class="remove-item">×</button>
         `;
@@ -184,12 +180,10 @@ document.addEventListener('DOMContentLoaded', function() {
         orderItemsDiv.querySelectorAll('.order-item').forEach(item => {
             const product = item.querySelector('.orderProduct').value;
             const quantity = item.querySelector('.orderQuantity').value;
-            const description = item.querySelector('.orderDescription').value;
             if (product && quantity) {
                 orderItems.push({ 
                     product, 
                     quantity: parseInt(quantity),
-                    description,
                     unitPrice: productPrices[product] || 0,
                     total: (productPrices[product] || 0) * parseInt(quantity)
                 });
@@ -239,6 +233,11 @@ document.addEventListener('DOMContentLoaded', function() {
         order.phoneNumber = customerPhoneNumber;
         order.deliveryAddress = deliveryAddress;
         
+        // Get order description from the new input field
+        const orderDescriptionInput = document.getElementById('orderDescription');
+        const orderDescription = orderDescriptionInput ? orderDescriptionInput.value : '';
+        order.description = orderDescription;
+        
         // Get payment method from dropdown
         const paymentMethodSelect = document.getElementById('paymentMethod');
         const paymentMethod = paymentMethodSelect ? paymentMethodSelect.value : 'cash';
@@ -277,7 +276,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (firstItem) {
             firstItem.querySelector('.orderProduct').value = '';
             firstItem.querySelector('.orderQuantity').value = '';
-            firstItem.querySelector('.orderDescription').value = '';
             firstItem.querySelector('.product-image-preview').innerHTML = '';
         }
         
@@ -289,6 +287,9 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Reset total
         calculateOrderTotal();
+        // Clear overall order description
+        const orderDescriptionInput = document.getElementById('orderDescription');
+        if (orderDescriptionInput) orderDescriptionInput.value = '';
     }
     
     // Clear order button
@@ -358,7 +359,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 customerOrders.forEach(order => {
                     // Group products for display
                     let productsDisplay = order.items.map(item => 
-                        `${item.product} x${item.quantity}${item.description ? `<br><small>${item.description}</small>` : ''}`
+                        `${item.product} x${item.quantity}`
                     ).join('<br>');
                     
                     // Format date
@@ -539,7 +540,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${item.quantity}</td>
                 <td>${item.unitPrice || productPrices[item.product] || 0} rupees</td>
                 <td>${item.total || (item.quantity * (item.unitPrice || productPrices[item.product] || 0))} rupees</td>
-                ${item.description ? `<td>${item.description}</td>` : ''}
             </tr>
         `).join('');
         
@@ -568,7 +568,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <th>Quantity</th>
                                 <th>Unit Price</th>
                                 <th>Total</th>
-                                <th>Description</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -852,7 +851,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         updateInventory(order.items);
                         // Mark order as processed
                         const orderRef = firebase.ref(firebase.database, `orders/${orderId}`);
-                        orderRef.set({ ...order, processed: true });
+                        firebase.set(orderRef, { ...order, processed: true });
                     }
                 });
             }
