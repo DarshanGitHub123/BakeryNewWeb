@@ -609,15 +609,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         recommendedList.innerHTML = '<div class="loading-message">Loading recommendations...</div>';
         
-        const salesRef = firebase.ref(firebase.database, 'sales');
-        firebase.get(salesRef).then((snapshot) => {
+        // Use completed orders as sales
+        const ordersRef = firebase.ref(firebase.database, 'orders');
+        firebase.get(ordersRef).then((snapshot) => {
             if (snapshot.exists()) {
-                const salesData = snapshot.val();
+                const orders = snapshot.val();
+                const completedOrders = Object.values(orders).filter(order => order.status === 'completed');
                 const productSales = {};
-
-                // Calculate total sales for each product
-                Object.values(salesData).forEach(sale => {
-                    sale.items.forEach(item => {
+                completedOrders.forEach(order => {
+                    (order.items || []).forEach(item => {
                         if (productSales[item.product]) {
                             productSales[item.product] += item.quantity;
                         } else {
@@ -625,15 +625,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                     });
                 });
-
                 // Sort products by sales and limit to top 10
                 const topProducts = Object.entries(productSales)
                     .sort((a, b) => b[1] - a[1])
                     .slice(0, 10)
                     .map(entry => entry[0]);
-
                 recommendedList.innerHTML = '';
-
                 topProducts.forEach(productName => {
                     const card = document.createElement('div');
                     card.className = 'menu-item-card';
@@ -648,7 +645,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     recommendedList.appendChild(card);
                 });
             } else {
-                recommendedList.innerHTML = '<div>No sales data available for recommendations.</div>';
+                recommendedList.innerHTML = '<div>No completed orders available for recommendations.</div>';
             }
         }).catch((error) => {
             console.error("Error loading recommendations:", error);
