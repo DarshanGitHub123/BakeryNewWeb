@@ -1760,7 +1760,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 ordersArray.forEach(order => {
                     // Group products for display
                     let productsDisplay = order.items.map(item => 
-                        `${item.product} x${item.quantity}`
+                        `${item.product} x${item.quantity}${item.description ? `<br><small>${item.description}</small>` : ''}`
                     ).join('<br>');
                     // Format date
                     const orderDate = new Date(order.timestamp).toLocaleDateString();
