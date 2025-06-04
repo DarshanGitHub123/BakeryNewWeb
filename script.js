@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
         forms.customerSignup.addEventListener('submit', async (e) => {
             e.preventDefault();
             const email = document.getElementById('signupUsername').value;
-            const password = document.getElementById('signupMobile').value;
+            const password = document.getElementById('signupPassword').value;
 
             // Validate password minimum length
             if (password.length < 6) {
@@ -246,12 +246,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 console.log("Customer user created successfully:", userCredential.user.uid);
                 
-                // Store additional customer data
+                // Store additional customer data (do NOT store password)
                 const userId = userCredential.user.uid;
                 const customerRef = firebase.ref(firebase.database, 'customers/' + userId);
                 await firebase.set(customerRef, {
                     email: email,
-                    mobile: password, // Using password for simplicity
                     role: 'customer'
                 });
                 
@@ -264,8 +263,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 forms.customer.classList.remove('hidden');
                 
                 // Clear signup form
-                document.getElementById('signupUsername').value = '';
-                document.getElementById('signupMobile').value = '';
+                if (document.getElementById('signupPassword')) {
+                    document.getElementById('signupUsername').value = '';
+                    document.getElementById('signupPassword').value = '';
+                } else {
+                    document.getElementById('signupUsername').value = '';
+                    document.getElementById('signupMobile').value = '';
+                }
             } catch (error) {
                 console.error("Customer signup failed:", error);
                 

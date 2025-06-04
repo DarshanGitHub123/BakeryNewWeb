@@ -2081,7 +2081,46 @@ document.addEventListener('DOMContentLoaded', function() {
         }).catch((err) => {
             console.error('Error loading orders data for overview:', err);
         });
+        // At the end of this function, update low stock notifications
+        updateLowStockNotifications();
     }
     // Call this on DOMContentLoaded
     renderOverviewChartAndStats();
+
+    // --- Low Stock Notification for Overview ---
+    function updateLowStockNotifications() {
+        const lowStockDiv = document.getElementById('lowStockNotifications');
+        if (!lowStockDiv) return;
+        // Get inventory from Firebase
+        const inventoryRef = firebase.ref(firebase.database, 'inventory');
+        firebase.get(inventoryRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                // Group by product name and sum quantities
+                const productQuantities = {};
+                Object.values(data).forEach(item => {
+                    if (!productQuantities[item.name]) {
+                        productQuantities[item.name] = 0;
+                    }
+                    productQuantities[item.name] += parseInt(item.quantity) || 0;
+                });
+                // Find low stock items (<= 5)
+                const lowStockItems = Object.entries(productQuantities)
+                    .filter(([name, qty]) => qty <= 5)
+                    .map(([name, qty]) => ({ name, qty }));
+                if (lowStockItems.length === 0) {
+                    lowStockDiv.innerHTML = '<span>No low stock items at the moment.</span>';
+                } else {
+                    lowStockDiv.innerHTML = lowStockItems.map(item =>
+                        `<div style="margin-bottom:6px;"><b>${item.name}</b>: <span style='color:#e67e22;'>${item.qty} left</span></div>`
+                    ).join('');
+                }
+            } else {
+                lowStockDiv.innerHTML = '<span>No low stock items at the moment.</span>';
+            }
+        }).catch((error) => {
+            console.error('Error loading inventory for low stock:', error);
+            lowStockDiv.innerHTML = '<span>Error loading low stock data.</span>';
+        });
+    }
 }); 
